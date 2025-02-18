@@ -1,1 +1,8 @@
 ﻿/.vs
+/Main/.vs
+/Main/Main/bin/Debug/net8.0-windows/runtimes
+/Main/Main/bin/Debug/net8.0-windows
+/Main/Main/obj/Debug/net8.0-windows
+/Main/Main/obj/Release/net8.0-windows
+/Main/Main/obj
+/Main/Main/Main.csproj.user
