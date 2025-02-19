@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server
+namespace Project08
 {
-    public class Data
+    public class ClientData
     {
         public double TotalMemory { get; set; }
         public double FreeMemory { get; set; }

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -46,7 +47,8 @@ namespace Server
             var args = new SocketAsyncEventArgs();
             args.Completed += ClientAccepted;
 
-            ServerSocket.AcceptAsync(args);            
+            ServerSocket.AcceptAsync(args);
+            AddLog("서비스가 시작되었습니다.");
         }
 
         private void ClientAccepted(object sender, SocketAsyncEventArgs e)
@@ -77,6 +79,8 @@ namespace Server
             {
                 var deviceinfo = JsonConvert.DeserializeObject<Data>(json);
 
+                AddLog(json);
+
                 //3. 객체의 내용을 UI에 반영
                 RefreshDeviceInfo(deviceinfo);
             }
@@ -90,7 +94,11 @@ namespace Server
         {
             Action action = () =>
             {
-
+                TotalMemory.Text = "총 메모리 (GB) : " + data.TotalMemory.ToString("F2");
+                FreeMemory.Text = "사용 가능한 메모리 (GB) : " + data.FreeMemory.ToString("F2");
+                RemainMemory.Text = "사용 중인 메모리 (GB) : " + data.RemainMemory.ToString("F2");
+                MemoryTitle.Text = "메모리 사용량 (%) : " + data.Percent;
+                MemoryBar.Value = data.Percent;
             };
 
             Dispatcher.Invoke(action);
@@ -99,7 +107,7 @@ namespace Server
         private void AddLog(string log)
         {
             //메인 스레드에서 UI 속성을 접근하는 로직이 수행되도록 위임            
-            Action action = () => { };
+            Action action = () => { txtLog.AppendText(log + "\r\n"); };
             Dispatcher.Invoke(action);
         }
     }

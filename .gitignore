@@ -11,3 +11,7 @@
 /Project08/Server/obj/Debug
 /Project08/Server/obj/Release
 /Project08/Server/Properties
+/Project08/Server/bin/Debug/Newtonsoft.Json.dll
+/Project08/Server/bin/Debug/Newtonsoft.Json.xml
+/Project08/Server/bin/Debug/Server.exe
+/Project08/Server/bin/Debug/Server.pdb
