@@ -7,28 +7,40 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="900">
     <Grid>
-        <ListView x:Name="IPList" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="50,50,460,270">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ListView x:Name="IPList" Margin="30,30,30,30" d:ItemsSource="{d:SampleData ItemCount=5}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <ListView x:Name="IPHistory" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="460,50,50,270">
+
+        <ListView x:Name="IPHistory" Grid.Row="0" Grid.Column="1" Margin="30,30,30,30" d:ItemsSource="{d:SampleData ItemCount=5}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <ProgressBar x:Name="MemoryBar" HorizontalAlignment="Left" Height="82" Margin="50,460,0,0" VerticalAlignment="Top" Width="286"/>
-        <TextBox x:Name="MemoryTitle" HorizontalAlignment="Left" Margin="50,430,0,0" TextWrapping="Wrap" Text="메모리 사용량 (%) : " VerticalAlignment="Top" Width="286" IsReadOnly="True"/>
-        <TextBox x:Name="TotalMemory" HorizontalAlignment="Left" Margin="50,340,0,0" TextWrapping="Wrap" Text="총 메모리 (GB) : " VerticalAlignment="Top" Width="286" IsReadOnly="True"/>
-        <TextBox x:Name="FreeMemory" HorizontalAlignment="Left" Margin="50,370,0,0" TextWrapping="Wrap" Text="사용 가능한 메모리 (GB) : " VerticalAlignment="Top" Width="286" IsReadOnly="True"/>
-        <TextBox x:Name="RemainMemory" HorizontalAlignment="Left" Margin="50,400,0,0" TextWrapping="Wrap" Text="사용 중인 메모리 (GB) : " VerticalAlignment="Top" Width="286" IsReadOnly="True"/>
-        <Button Content="서버 구동" HorizontalAlignment="Left" Margin="718,501,0,0" VerticalAlignment="Top" Height="52" Width="132" Click="Button_Click"/>
-        <TextBox x:Name="portBox" HorizontalAlignment="Left" Margin="755,469,0,0" TextWrapping="Wrap" Text="10004" VerticalAlignment="Top" Width="95"/>
-        <Label Content="Port" HorizontalAlignment="Left" Margin="718,465,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtLog" HorizontalAlignment="Left" Margin="450,469,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="251" Height="84"/>
+
+        <ProgressBar x:Name="MemoryBar" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Height="82" VerticalAlignment="Top" Width="286" Margin="30,194,0,0"/>
+        <TextBox x:Name="MemoryTitle" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" TextWrapping="Wrap" Text="메모리 사용량 (%) : " VerticalAlignment="Top" Width="286" IsReadOnly="True" Margin="30,164,0,0"/>
+        <TextBox x:Name="TotalMemory" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" TextWrapping="Wrap" Text="총 메모리 (GB) : " VerticalAlignment="Top" Width="286" IsReadOnly="True" Margin="30,72,0,0"/>
+        <TextBox x:Name="FreeMemory" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" TextWrapping="Wrap" Text="사용 가능한 메모리 (GB) : " VerticalAlignment="Top" Width="286" IsReadOnly="True" Margin="30,106,0,0"/>
+        <TextBox x:Name="RemainMemory" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" TextWrapping="Wrap" Text="사용 중인 메모리 (GB) : " VerticalAlignment="Center" Width="286" IsReadOnly="True" Margin="30,0,0,0"/>
+
+        <Button Content="서버 구동" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="52" Width="132" Click="Button_Click" Margin="308,230,0,0"/>
+        <TextBox x:Name="portBox" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="10004" VerticalAlignment="Top" Width="95" Margin="345,198,0,0"/>
+        <Label Content="Port" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="308,194,0,0"/>
+        <TextBox x:Name="txtLog" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" Height="84" Margin="48,198,0,0"/>
     </Grid>
 </Window>

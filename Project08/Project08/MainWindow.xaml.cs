@@ -16,14 +16,8 @@ using System.Diagnostics;
 using System.Threading;
 using System.Management;
 
-using LiveChartsCore;
-using LiveChartsCore.Defaults;
-using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Drawing.Geometries;
-using LiveChartsCore.SkiaSharpView.Painting;
-using SkiaSharp;
-using LiveChartsCore.SkiaSharpView.WPF;
-using LiveChartsCore.Drawing;
+using LiveCharts;
+using LiveCharts.Wpf;
 using System.Collections.ObjectModel;
 using System.Net.Sockets;
 using System.Windows.Threading;
@@ -37,15 +31,48 @@ namespace Project08
     public partial class MainWindow : Window
     {
         Socket ClientSocket;
+        // 타이머 변수 만들기
         public DispatcherTimer timer = new DispatcherTimer();
 
+        // 데이터 변수
         private double total_memory;
         private double free_memory;
         private double remain_memory;
-        private int percent;        
+        private int percent;
+
+        // 차트용
+        public SeriesCollection PieData { get; set; }
+        public ChartValues<double> TotalRam { get; set; }
+        public ChartValues<double> RamFree { get; set; }
+        public ChartValues<double> RamUsed { get; set; }        
+
+
         public MainWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            TotalRam = new ChartValues<double> { 0 };
+            RamFree = new ChartValues<double> { 0 };
+            RamUsed = new ChartValues<double> { 0 };
+
+            PieData = new SeriesCollection
+            {
+                new PieSeries
+                {
+                    Title = "Used",
+                    Values = new ChartValues<double> { 0 },
+                    DataLabels = true,
+                    LabelPoint = chartPoint => $"{chartPoint.Y:F2} GB"
+                },
+                new PieSeries
+                {
+                    Title = "Free",
+                    Values = new ChartValues<double> { 0 },
+                    DataLabels = true,
+                    LabelPoint = chartPoint => $"{chartPoint.Y:F2} GB"
+                }
+            };
+
+            DataContext = this;
         }
 
         private void memoryUpdate()
@@ -58,15 +85,25 @@ namespace Project08
             {
                 total_memory = double.Parse(info["TotalVisibleMemorySize"].ToString()) / (1024 * 1024);
                 free_memory = double.Parse(info["FreePhysicalMemory"].ToString()) / (1024 * 1024);
-                remain_memory = total_memory - free_memory;          
+                remain_memory = total_memory - free_memory;
                 percent = 100 * (int)remain_memory / (int)total_memory;
 
                 TotalMemory.Text = "총 메모리 (GB) : " + total_memory.ToString("F2");
                 FreeMemory.Text = "사용 가능한 메모리 (GB) : " + free_memory.ToString("F2");
                 RemainMemory.Text = "사용 중인 메모리 (GB) : " + remain_memory.ToString("F2");
                 MemoryTitle.Text = "메모리 사용량 (%) : " + percent;
-                MemoryBar.Value = percent;                
+                MemoryBar.Value = percent;
             }
+
+            TotalRam[0] = Math.Round(total_memory, 2);
+            RamUsed[0] = Math.Round(remain_memory, 2);
+            RamFree[0] = Math.Round(free_memory, 2);
+
+            // 파이 차트 업데이트
+            PieData[0].Values[0] = remain_memory;
+            PieData[1].Values[0] = free_memory;
+
+
         }
 
         private void ConnectButton_Click(object sender, RoutedEventArgs e)
