@@ -110,5 +110,7 @@ namespace Server
             Action action = () => { txtLog.AppendText(log + "\r\n"); };
             Dispatcher.Invoke(action);
         }
+
+        
     }
 }

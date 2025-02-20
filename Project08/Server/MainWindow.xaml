@@ -76,7 +76,7 @@
         </Grid>
 
         <Grid Grid.Row="3" Grid.Column="3">
-            <Button Content="서버 구동" Margin="10,0,10,40"/>
+            <Button Content="서버 구동" Margin="10,0,10,40" Click="Button_Click" FontSize="24" FontWeight="Bold" />
             <TextBox x:Name="portBox" TextWrapping="Wrap" Text="10004" VerticalAlignment="Bottom" Margin="50,0,10,10"/>
             <Label Content="Port" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5"/>
 
