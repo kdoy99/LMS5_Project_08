@@ -71,8 +71,9 @@ namespace Project08
 
         private void ConnectButton_Click(object sender, RoutedEventArgs e)
         {
+            int port = Convert.ToInt32(PortBox.Text); // PortBox 안에 있는 값을 port 변수에 저장
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            var endPoint = new IPEndPoint(IPAddress.Parse(IPBox.Text), 10004);
+            var endPoint = new IPEndPoint(IPAddress.Parse(IPBox.Text), port); // IP와 Port 값 따와서 사용
             var args = new SocketAsyncEventArgs();
             args.RemoteEndPoint = endPoint;
             args.Completed += ServerConnected;
@@ -83,8 +84,8 @@ namespace Project08
         {
             if (e.SocketError == SocketError.Success)
             {
-                // 서버 연결 성공시 서버로부터 제어 요청 받기
-                ReceiveControl();
+                // 서버 연결 성공시 서버로부터 제어 요청 받기                
+                ReceiveControl();                
             }
         }
 
@@ -99,13 +100,12 @@ namespace Project08
         private void ControlReceived(object sender, SocketAsyncEventArgs e)
         {
             string json = Encoding.UTF8.GetString(e.Buffer, 0, e.BytesTransferred);
-            var control = JsonConvert.DeserializeObject<ClientData>(json);
-
-            
+            var control = JsonConvert.DeserializeObject<ClientData>(json);            
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
+            // 타이머 1번 발생 = timer_Tick
             memoryUpdate();
             SendDeviceInfo();
         }
@@ -142,12 +142,13 @@ namespace Project08
             }
             catch { }
         }
-
+        // 클라이언트 창 로드될 때 발생되는 이벤트
         private void ClientWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            // 타이머 설정
             timer.Interval = TimeSpan.FromMilliseconds(100);
             timer.Tick += new EventHandler(timer_Tick);
             timer.Start();
-        }
+        }        
     }
 }

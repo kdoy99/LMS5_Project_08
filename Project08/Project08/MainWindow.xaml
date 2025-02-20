@@ -17,9 +17,10 @@
         <TextBox x:Name="TotalMemory" HorizontalAlignment="Left" Margin="50,50,0,0" TextWrapping="Wrap" Text="총 메모리 (GB) : " VerticalAlignment="Top" Width="286" IsReadOnly="True"/>
         <TextBox x:Name="FreeMemory" HorizontalAlignment="Left" Margin="50,100,0,0" TextWrapping="Wrap" Text="사용 가능한 메모리 (GB) : " VerticalAlignment="Top" Width="286" IsReadOnly="True"/>
         <TextBox x:Name="RemainMemory" HorizontalAlignment="Left" Margin="50,150,0,0" TextWrapping="Wrap" Text="사용 중인 메모리 (GB) : " VerticalAlignment="Top" Width="286" IsReadOnly="True"/>
-        <Button x:Name="ConnectButton" Content="서버 연결" HorizontalAlignment="Left" Margin="718,501,0,0" VerticalAlignment="Top" Height="52" Width="132" Click="ConnectButton_Click"/>
-        <TextBox x:Name="IPBox" HorizontalAlignment="Left" Margin="755,469,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="95"/>
-        <Label Content="IP" HorizontalAlignment="Left" Margin="718,465,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtLog" HorizontalAlignment="Left" Margin="450,469,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="251" Height="84"/>
+        <Button x:Name="ConnectButton" Content="서버 연결" HorizontalAlignment="Left" Margin="720,500,0,0" VerticalAlignment="Top" Height="50" Width="130" Click="ConnectButton_Click"/>
+        <TextBox x:Name="IPBox" HorizontalAlignment="Left" Margin="755,435,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="95"/>
+        <Label Content="IP" HorizontalAlignment="Left" Margin="724,430,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="PortBox" HorizontalAlignment="Left" Margin="755,465,0,0" TextWrapping="Wrap" Text="10004" VerticalAlignment="Top" Width="95"/>
+        <Label Content="Port" HorizontalAlignment="Left" Margin="718,460,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
