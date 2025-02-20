@@ -37,8 +37,16 @@
             <ProgressBar x:Name="MemoryBar" Margin="10,80,10,5"/>
         </Grid>
 
+        <Grid Grid.Row="1" Grid.Column="0">
+            <lvc:PieChart x:Name="MemoryChart" Margin="20,20,20,20" Series="{Binding PieData}">
+                <lvc:PieChart.LegendLocation>
+                    Right
+                </lvc:PieChart.LegendLocation>
+            </lvc:PieChart>
+        </Grid>
+
         <Grid Grid.Row="1" Grid.Column="1">
-            <lvc:PieChart x:Name="DataChart" Margin="20,20,20,20" Series="{Binding PieData}">
+            <lvc:PieChart x:Name="CPUChart" Margin="20,20,20,20" Series="{Binding PieData}">
                 <lvc:PieChart.LegendLocation>
                     Right
                 </lvc:PieChart.LegendLocation>
