@@ -16,19 +16,19 @@
             <RowDefinition Height="14*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Grid>
-            <TextBlock TextWrapping="Wrap" Text="Memory 사용량" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>    
+            <TextBlock TextWrapping="Wrap" Text="Memory 사용량" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
         </Grid>
 
         <Grid Grid.Column="1">
             <TextBlock TextWrapping="Wrap" Text="CPU 사용량" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
         </Grid>
-        
+
         <Grid Grid.Row="1">
             <lvc:PieChart x:Name="DataChart" Margin="20,20,20,20" Series="{Binding PieData}">
                 <lvc:PieChart.LegendLocation>
@@ -36,7 +36,7 @@
                 </lvc:PieChart.LegendLocation>
             </lvc:PieChart>
         </Grid>
-        
+
         <Grid Grid.Row="1" Grid.Column="1">
             <lvc:PieChart x:Name="CPUChart" Margin="20,20,20,20" Series="{Binding PieCPU}">
                 <lvc:PieChart.LegendLocation>
@@ -68,13 +68,13 @@
         </Grid>
 
         <Grid Grid.Column="2" Grid.Row="2">
-            <Button x:Name="ConnectButton" Content="서버 연결" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="ConnectButton_Click" Margin="0,0,30,30" FontSize="24" FontWeight="Bold"/>
-            <TextBox x:Name="IPBox" TextWrapping="Wrap" Text="127.0.0.1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="95" Margin="0,0,30,110"/>
-            <Label Content="IP" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,135,105"/>
-            <TextBox x:Name="PortBox" HorizontalAlignment="Right" TextWrapping="Wrap" Text="10004" VerticalAlignment="Bottom" Width="95" Margin="0,0,30,80"/>
-            <Label Content="Port" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,130,75"/>
+            <Button x:Name="ConnectButton" Content="서버 연결" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="ConnectButton_Click" Margin="0,0,10,10" FontSize="24" FontWeight="Bold" Height="47" Width="131"/>
+            <TextBox x:Name="IPBox" TextWrapping="Wrap" Text="127.0.0.1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="95" Margin="0,0,158,39"/>
+            <Label Content="IP" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,263,37"/>
+            <TextBox x:Name="PortBox" HorizontalAlignment="Right" TextWrapping="Wrap" Text="10004" VerticalAlignment="Bottom" Width="95" Margin="0,0,158,9"/>
+            <Label Content="Port" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,258,7"/>
         </Grid>
-        
+
 
     </Grid>
 </Window>

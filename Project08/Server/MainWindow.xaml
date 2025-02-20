@@ -4,45 +4,78 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Server"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="900">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"/>
-            <RowDefinition Height="14*"/>
-            <RowDefinition Height="14*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="5*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="IPList" Margin="30,30,30,30" d:ItemsSource="{d:SampleData ItemCount=5}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <Grid>
+            <TextBlock TextWrapping="Wrap" Text="Memory 사용량" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+        </Grid>
 
-        <ListView x:Name="IPHistory" Grid.Row="0" Grid.Column="1" Margin="30,30,30,30" d:ItemsSource="{d:SampleData ItemCount=5}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <Grid Grid.Column="1">
+            <TextBlock TextWrapping="Wrap" Text="CPU 사용량" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+        </Grid>
 
-        <ProgressBar x:Name="MemoryBar" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Height="82" VerticalAlignment="Top" Width="286" Margin="30,194,0,0"/>
-        <TextBox x:Name="MemoryTitle" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" TextWrapping="Wrap" Text="메모리 사용량 (%) : " VerticalAlignment="Top" Width="286" IsReadOnly="True" Margin="30,164,0,0"/>
-        <TextBox x:Name="TotalMemory" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" TextWrapping="Wrap" Text="총 메모리 (GB) : " VerticalAlignment="Top" Width="286" IsReadOnly="True" Margin="30,72,0,0"/>
-        <TextBox x:Name="FreeMemory" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" TextWrapping="Wrap" Text="사용 가능한 메모리 (GB) : " VerticalAlignment="Top" Width="286" IsReadOnly="True" Margin="30,106,0,0"/>
-        <TextBox x:Name="RemainMemory" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" TextWrapping="Wrap" Text="사용 중인 메모리 (GB) : " VerticalAlignment="Center" Width="286" IsReadOnly="True" Margin="30,0,0,0"/>
+        <Grid Grid.Row="3" Grid.Column="0">            
+            <TextBox x:Name="TotalMemory" TextWrapping="Wrap" Text="총 메모리 (GB) : " VerticalAlignment="Top"  IsReadOnly="True" Margin="10,0,10,0"/>
+            <TextBox x:Name="FreeMemory" TextWrapping="Wrap" Text="사용 가능한 메모리 (GB) : " VerticalAlignment="Top" IsReadOnly="True" Margin="10,20,10,0"/>
+            <TextBox x:Name="RemainMemory" TextWrapping="Wrap" Text="사용 중인 메모리 (GB) : " VerticalAlignment="Top" IsReadOnly="True" Margin="10,40,10,0"/>
+            <TextBox x:Name="MemoryTitle" TextWrapping="Wrap" Text="메모리 사용량 (%) : " VerticalAlignment="Top" IsReadOnly="True" Margin="10,60,10,0"/>
+            <ProgressBar x:Name="MemoryBar" Margin="10,80,10,5"/>
+        </Grid>
 
-        <Button Content="서버 구동" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="52" Width="132" Click="Button_Click" Margin="308,230,0,0"/>
-        <TextBox x:Name="portBox" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="10004" VerticalAlignment="Top" Width="95" Margin="345,198,0,0"/>
-        <Label Content="Port" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="308,194,0,0"/>
-        <TextBox x:Name="txtLog" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="250" Height="84" Margin="48,198,0,0"/>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <lvc:PieChart x:Name="DataChart" Margin="20,20,20,20" Series="{Binding PieData}">
+                <lvc:PieChart.LegendLocation>
+                    Right
+                </lvc:PieChart.LegendLocation>
+            </lvc:PieChart>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <lvc:CartesianChart Series="{Binding memorySeries}" Margin="20,20,20,20">
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis Title="시간(초)" />
+                </lvc:CartesianChart.AxisX>
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis Title="Memory 사용량 (GB)" MinValue="0" MaxValue="16" />
+                </lvc:CartesianChart.AxisY>
+            </lvc:CartesianChart>
+        </Grid>
+
+        <Grid Grid.Row="2" Grid.Column="1">
+            <lvc:CartesianChart Series="{Binding memorySeries}" Margin="20,20,20,20">
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis Title="시간(초)" />
+                </lvc:CartesianChart.AxisX>
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis Title="Memory 사용량 (GB)" MinValue="0" MaxValue="16" />
+                </lvc:CartesianChart.AxisY>
+            </lvc:CartesianChart>
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="3">
+            <Button Content="서버 구동" Margin="10,0,10,40"/>
+            <TextBox x:Name="portBox" TextWrapping="Wrap" Text="10004" VerticalAlignment="Bottom" Margin="50,0,10,10"/>
+            <Label Content="Port" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5"/>
+
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="2">
+            <TextBox x:Name="txtLog" TextWrapping="Wrap" Margin="-290,0,10,5" Grid.ColumnSpan="2"/>
+        </Grid>
     </Grid>
 </Window>
