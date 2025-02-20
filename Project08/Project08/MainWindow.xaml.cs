@@ -30,7 +30,9 @@ namespace Project08
 {        
     public partial class MainWindow : Window
     {
+        // 클라이언트 소켓
         Socket ClientSocket;
+
         // 타이머 변수 만들기
         public DispatcherTimer timer = new DispatcherTimer();
 
@@ -40,37 +42,94 @@ namespace Project08
         private double remain_memory;
         private int percent;
 
-        // 차트용
-        public SeriesCollection PieData { get; set; }
-        public ChartValues<double> TotalRam { get; set; }
-        public ChartValues<double> RamFree { get; set; }
-        public ChartValues<double> RamUsed { get; set; }        
+        // 메모리 차트용
+        public SeriesCollection PieData { get; set; } // 바인딩 데이터 1 (파이 차트)
+        public SeriesCollection memorySeries { get; set; } // 바인딩 데이터 2 (라인 차트)
+        public ChartValues<double> memoryUsage { get; set; } // 라인 차트 바인딩 데이터 용 차트 밸류
+        
+
+        // CPU 차트용
+        public SeriesCollection PieCPU { get; set; } // 바인딩 데이터 1 (파이 차트)
+        public SeriesCollection cpuSeries { get; set; } // 바인딩 데이터 2 (라인 차트)
+        public ChartValues<double> cpuUsage { get; set; } // 라인 차트 바인딩 데이터 용 차트 밸류
+
+        private PerformanceCounter cpuCounter; // CPU 파이 차트용
 
 
         public MainWindow()
         {
-            InitializeComponent();
-            TotalRam = new ChartValues<double> { 0 };
-            RamFree = new ChartValues<double> { 0 };
-            RamUsed = new ChartValues<double> { 0 };
+            InitializeComponent();            
 
+            memoryUsage = new ChartValues<double>();
+                        
+            // Binding, 메모리 파이차트
             PieData = new SeriesCollection
             {
                 new PieSeries
                 {
-                    Title = "Used",
+                    Title = "사용 중",
                     Values = new ChartValues<double> { 0 },
                     DataLabels = true,
                     LabelPoint = chartPoint => $"{chartPoint.Y:F2} GB"
                 },
                 new PieSeries
                 {
-                    Title = "Free",
+                    Title = "남은 공간",
                     Values = new ChartValues<double> { 0 },
                     DataLabels = true,
                     LabelPoint = chartPoint => $"{chartPoint.Y:F2} GB"
                 }
             };
+
+            // Binding, 메모리 라인차트
+            memorySeries = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Title = "Memory 사용량 (GB)",
+                    Values = memoryUsage,
+                    PointGeometry = DefaultGeometries.Circle,
+                    PointGeometrySize = 5
+                }
+            };
+
+            // CPU 변수 초기화
+            cpuUsage = new ChartValues<double>();
+
+            // Binding, CPU 파이차트
+            PieCPU = new SeriesCollection
+            {
+                new PieSeries
+                {
+                    Title = "사용 중",
+                    Values = new ChartValues<double> { 0 },
+                    DataLabels = true,
+                    LabelPoint = chartPoint => $"{chartPoint.Y:F2}%"
+                },
+                new PieSeries
+                {
+                    Title = "남은 공간",
+                    Values = new ChartValues<double> { 100 },
+                    DataLabels = true,
+                    LabelPoint = chartPoint => $"{chartPoint.Y:F2}%"
+                }
+            };
+
+            // Binding, CPU 라인차트
+            cpuSeries = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Title = "CPU 사용량 (%)",
+                    Values = cpuUsage,
+                    PointGeometry = DefaultGeometries.Circle,
+                    PointGeometrySize = 5
+                }
+            };
+
+            // 퍼포먼스 카운터 초기화 및 미리 호출
+            cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            cpuCounter.NextValue();
 
             DataContext = this;
         }
@@ -86,23 +145,32 @@ namespace Project08
                 total_memory = double.Parse(info["TotalVisibleMemorySize"].ToString()) / (1024 * 1024);
                 free_memory = double.Parse(info["FreePhysicalMemory"].ToString()) / (1024 * 1024);
                 remain_memory = total_memory - free_memory;
-                percent = 100 * (int)remain_memory / (int)total_memory;
+                percent = 100 * (int)remain_memory / (int)total_memory;                
+            }            
 
-                TotalMemory.Text = "총 메모리 (GB) : " + total_memory.ToString("F2");
-                FreeMemory.Text = "사용 가능한 메모리 (GB) : " + free_memory.ToString("F2");
-                RemainMemory.Text = "사용 중인 메모리 (GB) : " + remain_memory.ToString("F2");
-                MemoryTitle.Text = "메모리 사용량 (%) : " + percent;
-                MemoryBar.Value = percent;
-            }
-
-            TotalRam[0] = Math.Round(total_memory, 2);
-            RamUsed[0] = Math.Round(remain_memory, 2);
-            RamFree[0] = Math.Round(free_memory, 2);
-
-            // 파이 차트 업데이트
+            // memory 파이 차트 업데이트
             PieData[0].Values[0] = remain_memory;
             PieData[1].Values[0] = free_memory;
 
+            // memory 라인 차트 업데이트
+            memoryUsage.Add(Math.Round(remain_memory, 2));
+            if (memoryUsage.Count > 50)
+                memoryUsage.RemoveAt(0);
+
+            // CPU 용 데이터 변수 지정
+            float cpuValue = cpuCounter.NextValue();
+            float cpuFree = 100 - cpuValue;
+
+            // CPU 파이 차트 업데이트
+            PieCPU[0].Values[0] = Math.Round(cpuValue, 2);
+            PieCPU[1].Values[0] = Math.Round(cpuFree, 2);
+
+            // CPU 라인 차트 업데이트
+            cpuUsage.Add(Math.Round(cpuValue, 2));
+
+            // 데이터 포인트 수 제한
+            if (cpuUsage.Count > 50)
+                cpuUsage.RemoveAt(0);
 
         }
 
@@ -183,7 +251,7 @@ namespace Project08
         private void ClientWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // 타이머 설정
-            timer.Interval = TimeSpan.FromMilliseconds(100);
+            timer.Interval = TimeSpan.FromMilliseconds(1000); // 1초
             timer.Tick += new EventHandler(timer_Tick);
             timer.Start();
         }        
