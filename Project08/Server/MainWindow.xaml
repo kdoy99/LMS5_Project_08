@@ -29,13 +29,9 @@
             <TextBlock TextWrapping="Wrap" Text="CPU 사용량" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
         </Grid>
 
-        <Grid Grid.Row="3" Grid.Column="0">            
-            <TextBox x:Name="TotalMemory" TextWrapping="Wrap" Text="총 메모리 (GB) : " VerticalAlignment="Top"  IsReadOnly="True" Margin="10,0,10,0"/>
-            <TextBox x:Name="FreeMemory" TextWrapping="Wrap" Text="사용 가능한 메모리 (GB) : " VerticalAlignment="Top" IsReadOnly="True" Margin="10,20,10,0"/>
-            <TextBox x:Name="RemainMemory" TextWrapping="Wrap" Text="사용 중인 메모리 (GB) : " VerticalAlignment="Top" IsReadOnly="True" Margin="10,40,10,0"/>
-            <TextBox x:Name="MemoryTitle" TextWrapping="Wrap" Text="메모리 사용량 (%) : " VerticalAlignment="Top" IsReadOnly="True" Margin="10,60,10,0"/>
-            <ProgressBar x:Name="MemoryBar" Margin="10,80,10,5"/>
-        </Grid>
+        <Grid Grid.Column="2" Grid.ColumnSpan="2">
+            <TextBlock x:Name="HDD_Name" TextWrapping="Wrap" Text="HDD 사용량" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+        </Grid>        
 
         <Grid Grid.Row="1" Grid.Column="0">
             <lvc:PieChart x:Name="MemoryChart" Margin="20,20,20,20" Series="{Binding PieData}">
@@ -46,7 +42,15 @@
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="1">
-            <lvc:PieChart x:Name="CPUChart" Margin="20,20,20,20" Series="{Binding PieData}">
+            <lvc:PieChart x:Name="CPUChart" Margin="20,20,20,20" Series="{Binding PieCPU}">
+                <lvc:PieChart.LegendLocation>
+                    Right
+                </lvc:PieChart.LegendLocation>
+            </lvc:PieChart>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2">
+            <lvc:PieChart x:Name="HDDChart" Margin="20,20,20,20" Series="{Binding PieHDD}">
                 <lvc:PieChart.LegendLocation>
                     Right
                 </lvc:PieChart.LegendLocation>
@@ -65,14 +69,22 @@
         </Grid>
 
         <Grid Grid.Row="2" Grid.Column="1">
-            <lvc:CartesianChart Series="{Binding memorySeries}" Margin="20,20,20,20">
+            <lvc:CartesianChart Series="{Binding cpuSeries}" Margin="20,20,20,20">
                 <lvc:CartesianChart.AxisX>
                     <lvc:Axis Title="시간(초)" />
                 </lvc:CartesianChart.AxisX>
                 <lvc:CartesianChart.AxisY>
-                    <lvc:Axis Title="Memory 사용량 (GB)" MinValue="0" MaxValue="16" />
+                    <lvc:Axis Title="CPU 사용량 (%)" MinValue="0" MaxValue="100" />
                 </lvc:CartesianChart.AxisY>
             </lvc:CartesianChart>
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="0">
+            <TextBox x:Name="TotalMemory" TextWrapping="Wrap" Text="총 메모리 (GB) : " VerticalAlignment="Top"  IsReadOnly="True" Margin="10,0,10,0"/>
+            <TextBox x:Name="FreeMemory" TextWrapping="Wrap" Text="사용 가능한 메모리 (GB) : " VerticalAlignment="Top" IsReadOnly="True" Margin="10,20,10,0"/>
+            <TextBox x:Name="RemainMemory" TextWrapping="Wrap" Text="사용 중인 메모리 (GB) : " VerticalAlignment="Top" IsReadOnly="True" Margin="10,40,10,0"/>
+            <TextBox x:Name="MemoryTitle" TextWrapping="Wrap" Text="메모리 사용량 (%) : " VerticalAlignment="Top" IsReadOnly="True" Margin="10,60,10,0"/>
+            <ProgressBar x:Name="MemoryBar" Margin="10,80,10,5"/>
         </Grid>
 
         <Grid Grid.Row="3" Grid.Column="3">

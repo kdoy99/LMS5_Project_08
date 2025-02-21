@@ -17,6 +17,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using LiveCharts;
+using LiveCharts.Wpf;
 using Newtonsoft.Json;
 
 namespace Server
@@ -28,9 +30,113 @@ namespace Server
     {
         Socket ServerSocket;
         Socket ClientSocket;
+
+        // 메모리 차트용
+        public SeriesCollection PieData { get; set; } // 바인딩 데이터 1 (파이 차트)
+        public SeriesCollection memorySeries { get; set; } // 바인딩 데이터 2 (라인 차트)
+        public ChartValues<double> memoryUsage { get; set; } // 라인 차트 바인딩 데이터 용 차트 밸류
+
+
+        // CPU 차트용
+        public SeriesCollection PieCPU { get; set; } // 바인딩 데이터 1 (파이 차트)
+        public SeriesCollection cpuSeries { get; set; } // 바인딩 데이터 2 (라인 차트)
+        public ChartValues<double> cpuUsage { get; set; } // 라인 차트 바인딩 데이터 용 차트 밸류
+
+        // HDD 차트용
+        public SeriesCollection PieHDD { get; set; } // 바인딩 데이터 (파이 차트)
+
         public MainWindow()
         {
             InitializeComponent();
+
+            // 메모리 변수 초기화
+            memoryUsage = new ChartValues<double>();
+
+            // Binding, 메모리 파이차트
+            PieData = new SeriesCollection
+            {
+                new PieSeries
+                {
+                    Title = "사용 중",
+                    Values = new ChartValues<double> { 0 },
+                    DataLabels = true,
+                    LabelPoint = chartPoint => $"{chartPoint.Y:F2} GB"
+                },
+                new PieSeries
+                {
+                    Title = "남은 공간",
+                    Values = new ChartValues<double> { 0 },
+                    DataLabels = true,
+                    LabelPoint = chartPoint => $"{chartPoint.Y:F2} GB"
+                }
+            };
+
+            // Binding, 메모리 라인차트
+            memorySeries = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Title = "Memory 사용량 (GB)",
+                    Values = memoryUsage,
+                    PointGeometry = DefaultGeometries.Circle,
+                    PointGeometrySize = 5
+                }
+            };
+
+            // CPU 변수 초기화
+            cpuUsage = new ChartValues<double>();
+
+            // Binding, CPU 파이차트
+            PieCPU = new SeriesCollection
+            {
+                new PieSeries
+                {
+                    Title = "사용 중",
+                    Values = new ChartValues<double> { 0 },
+                    DataLabels = true,
+                    LabelPoint = chartPoint => $"{chartPoint.Y:F2}%"
+                },
+                new PieSeries
+                {
+                    Title = "남은 공간",
+                    Values = new ChartValues<double> { 100 },
+                    DataLabels = true,
+                    LabelPoint = chartPoint => $"{chartPoint.Y:F2}%"
+                }
+            };
+
+            // Binding, CPU 라인차트
+            cpuSeries = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Title = "CPU 사용량 (%)",
+                    Values = cpuUsage,
+                    PointGeometry = DefaultGeometries.Circle,
+                    PointGeometrySize = 5
+                }
+            };
+
+            // Binding, HDD 파이차트
+            PieHDD = new SeriesCollection
+            {
+                new PieSeries
+                {
+                    Title = "사용 중",
+                    Values = new ChartValues<long>{ 0 },
+                    DataLabels = true,
+                    LabelPoint = chartPoint => $"{chartPoint.Y:F2} GB"
+                },
+                new PieSeries
+                {
+                    Title = "남은 공간",
+                    Values = new ChartValues<long>{ 100 },
+                    DataLabels = true,
+                    LabelPoint = chartPoint => $"{chartPoint.Y:F2} GB"
+                }
+            };
+
+            DataContext = this;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -91,15 +197,47 @@ namespace Server
         }
 
         private void RefreshDeviceInfo(Data data)
-        {
+        {            
+            // 여기에 차트값들 집어넣기
             Action action = () =>
             {
+                double percent = (data.RemainMemory / data.TotalMemory) * 100;
+
                 TotalMemory.Text = "총 메모리 (GB) : " + data.TotalMemory.ToString("F2");
                 FreeMemory.Text = "사용 가능한 메모리 (GB) : " + data.FreeMemory.ToString("F2");
                 RemainMemory.Text = "사용 중인 메모리 (GB) : " + data.RemainMemory.ToString("F2");
-                MemoryTitle.Text = "메모리 사용량 (%) : " + data.Percent;
-                MemoryBar.Value = data.Percent;
+                MemoryTitle.Text = "메모리 사용량 (%) : " + percent.ToString("F2");
+                MemoryBar.Value = percent;
+
+                // memory 파이 차트 업데이트
+                PieData[0].Values[0] = data.RemainMemory;
+                PieData[1].Values[0] = data.FreeMemory;
+
+                // memory 라인 차트 업데이트
+                memoryUsage.Add(Math.Round(data.RemainMemory, 2));
+                if (memoryUsage.Count > 60)
+                    memoryUsage.RemoveAt(0);
+
+                // CPU 용 데이터 변수 지정                
+                float cpuFree = 100 - data.cpuValueData;
+
+                // CPU 파이 차트 업데이트
+                PieCPU[0].Values[0] = Math.Round(data.cpuValueData, 2);
+                PieCPU[1].Values[0] = Math.Round(cpuFree, 2);
+
+                // CPU 라인 차트 업데이트
+                cpuUsage.Add(Math.Round(data.cpuValueData, 2));
+
+                // 데이터 포인트 수 제한
+                if (cpuUsage.Count > 60)
+                    cpuUsage.RemoveAt(0);
+
+                // HDD 파이 차트 업데이트
+                PieHDD[0].Values[0] = data.useSize;
+                PieHDD[1].Values[0] = data.freeSize;
+                HDD_Name.Text = $"HDD 사용량 ({data.HDDname})";
             };
+            
 
             Dispatcher.Invoke(action);
         }

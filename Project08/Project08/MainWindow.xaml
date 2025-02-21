@@ -29,6 +29,10 @@
             <TextBlock TextWrapping="Wrap" Text="CPU 사용량" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
         </Grid>
 
+        <Grid Grid.Column="2">
+            <TextBlock x:Name="HDD_Name" TextWrapping="Wrap" Text="HDD 사용량" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+        </Grid>
+
         <Grid Grid.Row="1">
             <lvc:PieChart x:Name="DataChart" Margin="20,20,20,20" Series="{Binding PieData}">
                 <lvc:PieChart.LegendLocation>
@@ -39,6 +43,14 @@
 
         <Grid Grid.Row="1" Grid.Column="1">
             <lvc:PieChart x:Name="CPUChart" Margin="20,20,20,20" Series="{Binding PieCPU}">
+                <lvc:PieChart.LegendLocation>
+                    Right
+                </lvc:PieChart.LegendLocation>
+            </lvc:PieChart>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="2">
+            <lvc:PieChart x:Name="HDDChart" Margin="20,20,20,20" Series="{Binding PieHDD}">
                 <lvc:PieChart.LegendLocation>
                     Right
                 </lvc:PieChart.LegendLocation>

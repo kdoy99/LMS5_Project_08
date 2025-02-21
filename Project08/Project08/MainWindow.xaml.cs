@@ -25,6 +25,7 @@ using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using System.Net;
 using System.Timers;
+using System.IO;
 
 namespace Project08
 {        
@@ -37,10 +38,17 @@ namespace Project08
         public DispatcherTimer timer = new DispatcherTimer();
 
         // 데이터 변수
+        // 메모리
         private double total_memory;
         private double free_memory;
-        private double remain_memory;
-        private int percent;
+        private double remain_memory;        
+        // CPU
+        private float cpuValue;
+        // HDD
+        private string HDDName;
+        private long TotalSize;
+        private long FreeSize;
+        private long UseSize;
 
         // 메모리 차트용
         public SeriesCollection PieData { get; set; } // 바인딩 데이터 1 (파이 차트)
@@ -55,11 +63,15 @@ namespace Project08
 
         private PerformanceCounter cpuCounter; // CPU 파이 차트용
 
+        // HDD 차트용
+        public SeriesCollection PieHDD { get; set; } // 바인딩 데이터 (파이 차트)
+
 
         public MainWindow()
         {
             InitializeComponent();            
 
+            // Memory 변수 초기화
             memoryUsage = new ChartValues<double>();
                         
             // Binding, 메모리 파이차트
@@ -131,6 +143,26 @@ namespace Project08
             cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
             cpuCounter.NextValue();
 
+
+            // Binding, HDD 파이차트
+            PieHDD = new SeriesCollection
+            {
+                new PieSeries
+                {
+                    Title = "사용 중",
+                    Values = new ChartValues<long>{ 0 },
+                    DataLabels = true,
+                    LabelPoint = chartPoint => $"{chartPoint.Y:F2} GB"
+                },
+                new PieSeries
+                {
+                    Title = "남은 공간",
+                    Values = new ChartValues<long>{ 100 },
+                    DataLabels = true,
+                    LabelPoint = chartPoint => $"{chartPoint.Y:F2} GB"
+                }
+            };
+
             DataContext = this;
         }
 
@@ -144,9 +176,22 @@ namespace Project08
             {
                 total_memory = double.Parse(info["TotalVisibleMemorySize"].ToString()) / (1024 * 1024);
                 free_memory = double.Parse(info["FreePhysicalMemory"].ToString()) / (1024 * 1024);
-                remain_memory = total_memory - free_memory;
-                percent = 100 * (int)remain_memory / (int)total_memory;                
-            }            
+                remain_memory = total_memory - free_memory;                             
+            }
+
+            // HDD 정보
+            DriveInfo[] hddDrives = DriveInfo.GetDrives();
+
+            foreach (DriveInfo drive in hddDrives)
+            {
+                if (drive.DriveType == DriveType.Fixed)
+                {
+                    HDDName = drive.Name.ToString();
+                    TotalSize = drive.TotalSize / 1024 / 1024 / 1024;
+                    FreeSize = drive.AvailableFreeSpace / 1024 / 1024 / 1024;
+                    UseSize = (drive.TotalSize - drive.AvailableFreeSpace) / 1024 / 1024 / 1024;
+                }
+            }
 
             // memory 파이 차트 업데이트
             PieData[0].Values[0] = remain_memory;
@@ -154,11 +199,11 @@ namespace Project08
 
             // memory 라인 차트 업데이트
             memoryUsage.Add(Math.Round(remain_memory, 2));
-            if (memoryUsage.Count > 50)
+            if (memoryUsage.Count > 60)
                 memoryUsage.RemoveAt(0);
 
             // CPU 용 데이터 변수 지정
-            float cpuValue = cpuCounter.NextValue();
+            cpuValue = cpuCounter.NextValue();
             float cpuFree = 100 - cpuValue;
 
             // CPU 파이 차트 업데이트
@@ -169,8 +214,13 @@ namespace Project08
             cpuUsage.Add(Math.Round(cpuValue, 2));
 
             // 데이터 포인트 수 제한
-            if (cpuUsage.Count > 50)
+            if (cpuUsage.Count > 60)
                 cpuUsage.RemoveAt(0);
+
+            // HDD 파이 차트 업데이트
+            PieHDD[0].Values[0] = UseSize;
+            PieHDD[1].Values[0] = FreeSize;
+            HDD_Name.Text = $"HDD 사용량 ({HDDName})";
 
         }
 
@@ -226,10 +276,17 @@ namespace Project08
                 // 1. 전송할 데이터 엔터티 객체에 준비
                 var info = new ClientData
                 {
+                    // 메모리
                     TotalMemory = total_memory,
                     FreeMemory = free_memory,
                     RemainMemory = remain_memory,
-                    Percent = percent
+                    // CPU
+                    cpuValueData = cpuValue,
+                    // HDD
+                    HDDname = HDDName,
+                    totalSize = TotalSize,
+                    freeSize = FreeSize,
+                    useSize = UseSize
                 };
 
                 // 2. 객체를 json 문자열로 직렬화
