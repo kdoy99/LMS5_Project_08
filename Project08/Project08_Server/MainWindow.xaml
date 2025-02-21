@@ -79,6 +79,54 @@
             </lvc:CartesianChart>
         </Grid>
 
+        <Grid Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2">
+            <ListView x:Name="HistoryList" d:ItemsSource="{d:SampleData ItemCount=30}" Margin="10,40,10,10">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock FontSize="10" FontWeight="Bold">                                
+                                <Run Text="{Binding LogNumber}" />
+                                <Run Text="번째 데이터" />
+                            </TextBlock>
+                            <TextBlock FontSize="8" FontWeight="Bold" Foreground="Blue">                                
+                                <Run Text="총 메모리 (GB) : " />
+                                <Run Text="{Binding TotalMemory}" />                                
+                            </TextBlock>
+                            <TextBlock FontSize="8" FontWeight="Bold" Foreground="Blue">
+                                <Run Text="남은 메모리 (GB) : " />
+                                <Run Text="{Binding FreeMemory}" />                                
+                            </TextBlock>
+                            <TextBlock FontSize="8" FontWeight="Bold" Foreground="Blue">
+                                <Run Text="사용중인 메모리 (GB) : " />
+                                <Run Text="{Binding RemainMemory}" />                                
+                            </TextBlock>
+                            <TextBlock FontSize="8" FontWeight="Bold" Foreground="Blue">
+                                <Run Text="CPU 사용량 (%) : " />
+                                <Run Text="{Binding cpuValueData}" />                                
+                            </TextBlock>
+                            <TextBlock FontSize="8" FontWeight="Bold" Foreground="Blue">
+                                <Run Text="HDD 이름 : " />
+                                <Run Text="{Binding HDDname}" />                                
+                            </TextBlock>
+                            <TextBlock FontSize="8" FontWeight="Bold" Foreground="Blue">
+                                <Run Text="HDD 용량 : " />
+                                <Run Text="{Binding totalSize}" />                                
+                            </TextBlock>
+                            <TextBlock FontSize="8" FontWeight="Bold" Foreground="Blue">
+                                <Run Text="HDD 남은 용량 : " />
+                                <Run Text="{Binding freeSize}" />                                
+                            </TextBlock>
+                            <TextBlock FontSize="8" FontWeight="Bold" Foreground="Blue">
+                                <Run Text="HDD 사용중인 용량 : " />
+                                <Run Text="{Binding useSize}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" Text="이전 데이터 로그" VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20"/>
+        </Grid>
+
         <Grid Grid.Row="3" Grid.Column="0">
             <TextBox x:Name="TotalMemory" TextWrapping="Wrap" Text="총 메모리 (GB) : " VerticalAlignment="Top"  IsReadOnly="True" Margin="10,0,10,0"/>
             <TextBox x:Name="FreeMemory" TextWrapping="Wrap" Text="사용 가능한 메모리 (GB) : " VerticalAlignment="Top" IsReadOnly="True" Margin="10,20,10,0"/>
@@ -94,8 +142,8 @@
 
         </Grid>
 
-        <Grid Grid.Row="3" Grid.Column="2">
-            <TextBox x:Name="txtLog" TextWrapping="Wrap" Margin="-290,0,10,5" Grid.ColumnSpan="2"/>
+        <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2">
+            <TextBox x:Name="txtLog" TextWrapping="Wrap" Margin="10,0,10,5" />
         </Grid>
     </Grid>
 </Window>

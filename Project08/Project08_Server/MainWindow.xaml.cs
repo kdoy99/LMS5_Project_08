@@ -49,7 +49,9 @@ namespace Server
         // HDD 차트용
         public SeriesCollection PieHDD { get; set; } // 바인딩 데이터 (파이 차트)
 
-        private float cpuFree;
+        private double cpuFree;
+
+        List<Data> dataList;
 
         public MainWindow()
         {
@@ -71,7 +73,7 @@ namespace Server
                 new PieSeries
                 {
                     Title = "남은 공간",
-                    Values = new ChartValues<double> { 0 },
+                    Values = new ChartValues<double> { 100 },
                     DataLabels = true,
                     LabelPoint = chartPoint => $"{chartPoint.Y:F2} GB"
                 }
@@ -142,8 +144,23 @@ namespace Server
                 }
             };
 
-            DataContext = this;            
-        }        
+            DataContext = this;
+
+            ReadNoticeDB();
+        }
+        private void ReadNoticeDB()
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(App.databasePath)) // databasePath : Notice 정보 들어있는 DB
+            {
+                connection.CreateTable<Data>();
+                dataList = connection.Query<Data>("SELECT * FROM Data ORDER BY RANDOM() LIMIT 30");
+            }
+
+            if (dataList != null)
+            {
+                HistoryList.ItemsSource = dataList;
+            }
+        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -251,6 +268,8 @@ namespace Server
 
                     // UI 컨트롤에 입력된 데이터를 data 객체 형태로, 생성한 SQLite DB Table에 삽입                    
                     connection.Insert(data);
+
+                    
                 }
                 
             };                

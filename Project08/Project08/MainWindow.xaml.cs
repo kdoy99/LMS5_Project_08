@@ -27,7 +27,7 @@ using System.Net;
 using System.Timers;
 using System.IO;
 
-namespace Client
+namespace Project08
 {        
     public partial class MainWindow : Window
     {
@@ -43,7 +43,7 @@ namespace Client
         private double free_memory;
         private double remain_memory;        
         // CPU
-        private double cpuValue;
+        private float cpuValue;
         // HDD
         private string HDDName;
         private long TotalSize;
@@ -87,7 +87,7 @@ namespace Client
                 new PieSeries
                 {
                     Title = "남은 공간",
-                    Values = new ChartValues<double> { 100 },
+                    Values = new ChartValues<double> { 0 },
                     DataLabels = true,
                     LabelPoint = chartPoint => $"{chartPoint.Y:F2} GB"
                 }
@@ -176,7 +176,7 @@ namespace Client
             {
                 total_memory = double.Parse(info["TotalVisibleMemorySize"].ToString()) / (1024 * 1024);
                 free_memory = double.Parse(info["FreePhysicalMemory"].ToString()) / (1024 * 1024);
-                remain_memory = total_memory - free_memory;
+                remain_memory = total_memory - free_memory;                             
             }
 
             // HDD 정보
@@ -204,7 +204,7 @@ namespace Client
 
             // CPU 용 데이터 변수 지정
             cpuValue = cpuCounter.NextValue();
-            double cpuFree = 100 - cpuValue;
+            float cpuFree = 100 - cpuValue;
 
             // CPU 파이 차트 업데이트
             PieCPU[0].Values[0] = Math.Round(cpuValue, 2);
@@ -277,11 +277,11 @@ namespace Client
                 var info = new ClientData
                 {
                     // 메모리
-                    TotalMemory = Math.Round(total_memory, 2),
-                    FreeMemory = Math.Round(free_memory, 2),
-                    RemainMemory = Math.Round(remain_memory, 2),
+                    TotalMemory = total_memory,
+                    FreeMemory = free_memory,
+                    RemainMemory = remain_memory,
                     // CPU
-                    cpuValueData = Math.Round(cpuValue, 2),
+                    cpuValueData = cpuValue,
                     // HDD
                     HDDname = HDDName,
                     totalSize = TotalSize,

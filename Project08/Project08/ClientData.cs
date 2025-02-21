@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Client
+namespace Project08
 {
     public class ClientData
     {
@@ -14,7 +14,7 @@ namespace Client
         public double RemainMemory { get; set; }        
 
         // CPU
-        public double cpuValueData { get; set; }
+        public float cpuValueData { get; set; }
 
         // HDD
         public string HDDname { get; set; }

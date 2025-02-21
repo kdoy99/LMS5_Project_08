@@ -19,12 +19,12 @@ namespace Server
         public double RemainMemory { get; set; } // 사용중인 메모리        
 
         // CPU
-        public float cpuValueData { get; set; } // CPU 사용량
+        public double cpuValueData { get; set; } // CPU 사용량
 
         // HDD
-        public string HDDname { get; set; }
-        public long totalSize { get; set; }
-        public long freeSize { get; set; }
-        public long useSize { get; set; }
+        public string HDDname { get; set; } // 하드디스크 이름
+        public long totalSize { get; set; } // 하드디스크 총 용량
+        public long freeSize { get; set; } // 하드디스크 남은 용량
+        public long useSize { get; set; } // 하드디스크 사용중인 용량
     }
 }
