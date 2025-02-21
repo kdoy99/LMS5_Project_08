@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +14,7 @@ using System.Windows.Data;
 
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -20,6 +22,8 @@ using System.Windows.Shapes;
 using LiveCharts;
 using LiveCharts.Wpf;
 using Newtonsoft.Json;
+
+using SQLite;
 
 namespace Server
 {
@@ -44,6 +48,8 @@ namespace Server
 
         // HDD 차트용
         public SeriesCollection PieHDD { get; set; } // 바인딩 데이터 (파이 차트)
+
+        private float cpuFree;
 
         public MainWindow()
         {
@@ -136,8 +142,8 @@ namespace Server
                 }
             };
 
-            DataContext = this;
-        }
+            DataContext = this;            
+        }        
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -219,7 +225,7 @@ namespace Server
                     memoryUsage.RemoveAt(0);
 
                 // CPU 용 데이터 변수 지정                
-                float cpuFree = 100 - data.cpuValueData;
+                cpuFree = 100 - data.cpuValueData;
 
                 // CPU 파이 차트 업데이트
                 PieCPU[0].Values[0] = Math.Round(data.cpuValueData, 2);
@@ -236,8 +242,18 @@ namespace Server
                 PieHDD[0].Values[0] = data.useSize;
                 PieHDD[1].Values[0] = data.freeSize;
                 HDD_Name.Text = $"HDD 사용량 ({data.HDDname})";
-            };
-            
+
+                // 지정된 경로에 생성할 DB 연결 객체 생성
+                using (SQLiteConnection connection = new SQLiteConnection(App.databasePath))
+                {
+                    // Data 클래스 정의를 기반으로 SQLite DB Table 생성 (테이블이 없을 경우, 있으면 X)
+                    connection.CreateTable<Data>();
+
+                    // UI 컨트롤에 입력된 데이터를 data 객체 형태로, 생성한 SQLite DB Table에 삽입                    
+                    connection.Insert(data);
+                }
+                
+            };                
 
             Dispatcher.Invoke(action);
         }

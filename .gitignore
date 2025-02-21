@@ -18,3 +18,7 @@
 /Project08/LogData
 /Project08/Server/bin/Debug
 /Project08/Server/Server.csproj
+/Project08/Project08_Client/bin/Debug/net8.0-windows
+/Project08/Project08_Client/obj
+/Project08/Project08_Server/bin/Debug/net8.0-windows
+/Project08/Project08_Server/obj

@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SQLite;
 
 namespace Server
 {
     public class Data
     {
+        // 프라이머리 키
+        [PrimaryKey, AutoIncrement]
+        public int LogNumber { get; set; }
+
         // 메모리
         public double TotalMemory { get; set; } // 총 메모리
         public double FreeMemory { get; set; } // 남은 메모리

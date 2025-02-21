@@ -27,7 +27,7 @@ using System.Net;
 using System.Timers;
 using System.IO;
 
-namespace Project08
+namespace Client
 {        
     public partial class MainWindow : Window
     {
